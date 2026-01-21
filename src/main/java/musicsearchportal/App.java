@@ -1,4 +1,4 @@
-package music_search_portal;
+package musicsearchportal;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

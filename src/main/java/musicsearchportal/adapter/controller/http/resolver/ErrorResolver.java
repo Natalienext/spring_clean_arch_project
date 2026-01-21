@@ -1,17 +1,19 @@
-package music_search_portal.adapter.controller.http.resolver;
+package musicsearchportal.adapter.controller.http.resolver;
 
-import music_search_portal.adapter.controller.http.post.Controller;
-import music_search_portal.adapter.controller.http.post.response.ErrorResponse;
+import lombok.extern.slf4j.Slf4j;
+import musicsearchportal.adapter.controller.http.post.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice(assignableTypes = {Controller.class})
+@RestControllerAdvice
+@Slf4j
 public class ErrorResolver {
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorResponse> handleException(Exception ex) {
+    log.error("Ошибка при создании объявления");
     ErrorResponse error =
         new ErrorResponse(
             "Ошибка при создании объявления",

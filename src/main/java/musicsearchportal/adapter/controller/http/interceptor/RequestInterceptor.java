@@ -1,4 +1,4 @@
-package music_search_portal.adapter.controller.http.interceptor;
+package musicsearchportal.adapter.controller.http.interceptor;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

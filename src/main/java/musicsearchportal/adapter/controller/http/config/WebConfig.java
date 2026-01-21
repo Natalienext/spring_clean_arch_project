@@ -1,6 +1,6 @@
-package music_search_portal.adapter.controller.http.config;
+package musicsearchportal.adapter.controller.http.config;
 
-import music_search_portal.adapter.controller.http.interceptor.RequestInterceptor;
+import musicsearchportal.adapter.controller.http.interceptor.RequestInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
