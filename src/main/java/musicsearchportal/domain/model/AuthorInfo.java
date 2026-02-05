@@ -18,7 +18,7 @@ public final class AuthorInfo {
     this.yearsExperience = yearsExperience;
   }
 
-  public static AuthorInfo create(
+  public static AuthorInfo from(
       UUID userId, String displayName, String userType, int yearsExperience) {
     return new AuthorInfo(userId, displayName, yearsExperience);
   }

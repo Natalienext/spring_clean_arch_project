@@ -8,9 +8,14 @@ import java.util.UUID;
 import lombok.Getter;
 import musicsearchportal.domain.model.AuthorInfo;
 import musicsearchportal.domain.model.MusicGenre;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.IdGenerator;
 
 @Getter
 public class Reply {
+
+  @Autowired
+  private static IdGenerator idGenerator;
 
   // Индентификация
   private final UUID replyId;
@@ -44,7 +49,7 @@ public class Reply {
 
   public static Reply create(
       UUID postId, AuthorInfo author, String message, Set<MusicGenre> genres) {
-    return new Reply(UUID.randomUUID(), postId, author, message, genres);
+    return new Reply(idGenerator.generateId(), postId, author, message, genres);
   }
 
   private void validate(String message, Set<MusicGenre> genres) {
