@@ -2,19 +2,17 @@ package musicsearchportal.domain.model.post;
 
 import java.util.Objects;
 import java.util.UUID;
+
+import com.github.f4b6a3.uuid.UuidCreator;
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.IdGenerator;
 
 @Getter
 public final class PostId {
 
-  @Autowired private static IdGenerator idGenerator;
-
   private final UUID value;
 
   public static PostId newId() {
-    return new PostId(idGenerator.generateId());
+    return new PostId(UuidCreator.getTimeOrderedEpoch());
   }
 
   public static PostId fromString(String uuid) {
