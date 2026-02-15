@@ -1,14 +1,11 @@
 package musicsearchportal.domain.model.reply;
 
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
 import com.github.f4b6a3.uuid.UuidCreator;
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.UUID;
 import lombok.Getter;
 import musicsearchportal.domain.model.AuthorInfo;
-import musicsearchportal.domain.model.MusicGenre;
 
 @Getter
 public class Reply {
@@ -21,7 +18,6 @@ public class Reply {
   private boolean isActive;
 
   // Value Objects
-  private final Set<MusicGenre> genres;
   private final AuthorInfo author;
 
   // Метаданные
@@ -31,32 +27,44 @@ public class Reply {
 
   // Приватный конструктор
   private Reply(
-      UUID replyId, UUID postId, AuthorInfo author, String message, Set<MusicGenre> genres) {
-    validate(message, genres);
+      UUID replyId,
+      UUID postId,
+      AuthorInfo author,
+      String message,
+      LocalDateTime createdAt,
+      LocalDateTime updatedAt) {
+    validate(message);
     this.replyId = replyId;
     this.postId = postId;
     this.author = author;
     this.message = message;
-    this.genres = new HashSet<>(genres);
     this.isActive = true;
-    this.createdAt = LocalDateTime.now();
-    this.updatedAt = LocalDateTime.now();
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
+  }
+
+  public static Reply from(
+      UUID replyId,
+      UUID postId,
+      AuthorInfo author,
+      String message,
+      LocalDateTime createdAt,
+      LocalDateTime updatedAt) {
+    return new Reply(replyId, postId, author, message, createdAt, updatedAt);
   }
 
   public static Reply create(
-      UUID postId, AuthorInfo author, String message, Set<MusicGenre> genres) {
-    return new Reply(UuidCreator.getTimeOrderedEpoch(), postId, author, message, genres);
+      UUID postId, AuthorInfo author, String message, LocalDateTime createdAt) {
+    return new Reply(
+        UuidCreator.getTimeOrderedEpoch(), postId, author, message, createdAt, createdAt);
   }
 
-  private void validate(String message, Set<MusicGenre> genres) {
+  private void validate(String message) {
     if (message == null || message.trim().isEmpty()) {
       throw new IllegalArgumentException("Сообщение не может быть пустым");
     }
     if (message.trim().length() < 10) {
       throw new IllegalArgumentException("Сообщение должно содержать минимум 10 символов");
-    }
-    if (genres == null || genres.isEmpty()) {
-      throw new IllegalArgumentException("Должен быть указан хотя бы один жанр");
     }
   }
 

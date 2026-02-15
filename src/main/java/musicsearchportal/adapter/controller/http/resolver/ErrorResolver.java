@@ -13,12 +13,10 @@ public class ErrorResolver {
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorResponse> handleException(Exception ex) {
-    log.error("Ошибка при создании объявления");
+    log.error("Неожиданная ошибка");
     ErrorResponse error =
         new ErrorResponse(
-            "Ошибка при создании объявления",
-            ex.getMessage(),
-            HttpStatus.INTERNAL_SERVER_ERROR.value());
+            "Неожиданная ошибка", ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
   }
 }

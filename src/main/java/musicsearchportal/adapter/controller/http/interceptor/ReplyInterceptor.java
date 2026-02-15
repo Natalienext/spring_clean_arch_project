@@ -9,13 +9,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Component
 @Slf4j
-public class RequestInterceptor implements HandlerInterceptor {
+public class ReplyInterceptor implements HandlerInterceptor {
 
   @Override
   public boolean preHandle(
       HttpServletRequest request, HttpServletResponse response, Object handler) {
 
-    log.info("Запрос на создание объявления: {} {}", request.getMethod(), request.getRequestURI());
+    log.info("Запрос на добавление отклика: {} {}", request.getMethod(), request.getRequestURI());
 
     request.setAttribute("startTime", System.currentTimeMillis());
 
@@ -34,7 +34,7 @@ public class RequestInterceptor implements HandlerInterceptor {
       long duration = System.currentTimeMillis() - startTime;
 
       log.info(
-          "Выполнено создание объявления {} {} -> {} ({} мс)",
+          "Отклик добавлен {} {} -> {} ({} мс)",
           request.getMethod(),
           request.getRequestURI(),
           response.getStatus(),

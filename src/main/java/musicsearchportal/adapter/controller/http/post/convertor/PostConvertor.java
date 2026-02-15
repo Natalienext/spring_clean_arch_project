@@ -15,9 +15,16 @@ public final class PostConvertor {
     }
 
     return CreatePostParam.builder()
-        .author(request.author())
+        .title(request.title())
         .description(request.description())
-        .hashtags(request.hashtags())
+        .authorId(request.authorId())
+        .authorName(request.authorName())
+        .authorYearsExperience(request.authorYearsExperience())
+        .city(request.city())
+        .district(request.district())
+        .remoteOk(request.remoteOk())
+        .genres(request.genres())
+        .postType(request.postType())
         .createdAt(Instant.now())
         .build();
   }

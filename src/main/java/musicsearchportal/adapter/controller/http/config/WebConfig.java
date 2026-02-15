@@ -1,6 +1,7 @@
 package musicsearchportal.adapter.controller.http.config;
 
-import musicsearchportal.adapter.controller.http.interceptor.RequestInterceptor;
+import musicsearchportal.adapter.controller.http.interceptor.PostInterceptor;
+import musicsearchportal.adapter.controller.http.interceptor.ReplyInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -8,14 +9,17 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-  private final RequestInterceptor requestInterceptor;
+  private final PostInterceptor postInterceptor;
+  private final ReplyInterceptor replyInterceptor;
 
-  public WebConfig(RequestInterceptor requestInterceptor) {
-    this.requestInterceptor = requestInterceptor;
+  public WebConfig(PostInterceptor postInterceptor, ReplyInterceptor replyInterceptor) {
+    this.postInterceptor = postInterceptor;
+    this.replyInterceptor = replyInterceptor;
   }
 
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
-    registry.addInterceptor(requestInterceptor).addPathPatterns("/create-post");
+    registry.addInterceptor(postInterceptor).addPathPatterns("/create-post");
+    registry.addInterceptor(replyInterceptor).addPathPatterns("/add-reply");
   }
 }
