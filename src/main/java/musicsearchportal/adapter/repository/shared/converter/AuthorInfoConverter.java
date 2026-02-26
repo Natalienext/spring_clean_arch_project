@@ -1,7 +1,7 @@
-package musicsearchportal.adapter.controller.http.repository.shared.converter;
+package musicsearchportal.adapter.repository.shared.converter;
 
 import java.util.UUID;
-import musicsearchportal.adapter.controller.http.repository.shared.model.AuthorInfoDbModel;
+import musicsearchportal.adapter.repository.shared.model.AuthorInfoDbModel;
 import musicsearchportal.domain.model.AuthorInfo;
 import org.springframework.stereotype.Component;
 

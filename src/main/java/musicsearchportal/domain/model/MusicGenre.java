@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Getter;
+import musicsearchportal.domain.exception.DomainException;
 
 @Getter
 public final class MusicGenre {
@@ -26,14 +27,14 @@ public final class MusicGenre {
   private void validate(String mainGenre, String subGenre) {
 
     if (mainGenre == null || mainGenre.isBlank()) {
-      throw new IllegalArgumentException("Основной жанр обязателен");
+      throw new DomainException("Основной жанр обязателен");
     }
     if (subGenre == null || subGenre.isBlank()) {
-      throw new IllegalArgumentException("Поджанр обязателен");
+      throw new DomainException("Поджанр обязателен");
     }
 
-    String main = mainGenre.toLowerCase();
-    String sub = subGenre.toLowerCase();
+    String main = mainGenre.trim().toLowerCase();
+    String sub = subGenre.trim().toLowerCase();
 
     if (!sub.contains(main)) {
       throw new IllegalArgumentException("Поджанр должен соответствовать жанру");
@@ -51,12 +52,8 @@ public final class MusicGenre {
     for (String mainGenre : mainGenres) {
       String prefix = mainGenre + "_";
       List<String> subGenres = genresSet.stream().filter(g -> g.startsWith(prefix)).toList();
-      if (subGenres.isEmpty()) {
-        result.add(new MusicGenre(mainGenre, null));
-      } else {
-        for (String subGenre : subGenres) {
-          result.add(new MusicGenre(mainGenre, subGenre));
-        }
+      for (String subGenre : subGenres) {
+        result.add(new MusicGenre(mainGenre, subGenre));
       }
     }
 

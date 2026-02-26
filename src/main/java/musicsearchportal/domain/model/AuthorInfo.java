@@ -34,10 +34,6 @@ public final class AuthorInfo {
     }
   }
 
-  public String getShortInfo() {
-    return String.format("%s (опыт: %d лет)", displayName, yearsExperience);
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

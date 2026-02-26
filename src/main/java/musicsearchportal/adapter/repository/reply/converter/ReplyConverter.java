@@ -1,11 +1,12 @@
-package musicsearchportal.adapter.controller.http.repository.reply.converter;
+package musicsearchportal.adapter.repository.reply.converter;
 
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import musicsearchportal.adapter.controller.http.repository.reply.model.ReplyDbModel;
-import musicsearchportal.adapter.controller.http.repository.shared.converter.AuthorInfoConverter;
+import musicsearchportal.adapter.repository.reply.model.ReplyDbModel;
+import musicsearchportal.adapter.repository.shared.converter.AuthorInfoConverter;
+import musicsearchportal.domain.model.post.PostId;
 import musicsearchportal.domain.model.reply.Reply;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +34,7 @@ public class ReplyConverter {
 
     return Reply.from(
         UUID.fromString(dbModel.getReplyId()),
-        postId,
+        PostId.fromUuid(postId),
         authorConverter.toEntity(dbModel.getAuthor()),
         dbModel.getMessage(),
         dbModel.getCreatedAt().atZone(ZoneId.systemDefault()).toLocalDateTime(),

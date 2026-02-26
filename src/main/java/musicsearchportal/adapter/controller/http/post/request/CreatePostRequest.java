@@ -11,6 +11,6 @@ public record CreatePostRequest(
     int authorYearsExperience,
     String city,
     String district,
-    Boolean remoteOk,
+    boolean remoteOk,
     Set<String> genres,
     String postType) {}

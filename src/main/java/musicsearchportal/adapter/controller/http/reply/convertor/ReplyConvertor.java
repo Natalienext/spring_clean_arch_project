@@ -1,17 +1,19 @@
 package musicsearchportal.adapter.controller.http.reply.convertor;
 
-import java.time.Instant;
 import musicsearchportal.adapter.controller.http.reply.request.AddReplyRequest;
 import musicsearchportal.adapter.controller.http.reply.response.AddReplyResponse;
 import musicsearchportal.boundary.model.AddReplyParam;
 import musicsearchportal.boundary.model.AddReplyResult;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 public final class ReplyConvertor {
 
   public static AddReplyParam createRequestToModel(AddReplyRequest request) {
 
     if (request == null) {
-      return AddReplyParam.builder().createdAt(Instant.now()).build();
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "AddReplyRequest не может быть null");
     }
 
     return AddReplyParam.builder()
@@ -20,7 +22,6 @@ public final class ReplyConvertor {
         .authorId(request.authorId())
         .authorName(request.authorName())
         .authorYearsExperience(request.authorYearsExperience())
-        .createdAt(Instant.now())
         .build();
   }
 

@@ -1,19 +1,15 @@
 package musicsearchportal.adapter.repository.reply;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 import java.util.UUID;
-import musicsearchportal.adapter.controller.http.repository.post.converter.PostConverter;
-import musicsearchportal.adapter.controller.http.repository.post.model.PostDbModel;
-import musicsearchportal.adapter.controller.http.repository.reply.ReplyRepositoryImpl;
-import musicsearchportal.adapter.controller.http.repository.reply.converter.ReplyConverter;
-import musicsearchportal.adapter.controller.http.repository.reply.model.ReplyDbModel;
-import musicsearchportal.domain.exception.PostOperationException;
-import musicsearchportal.domain.model.AuthorInfo;
-import musicsearchportal.domain.model.post.Post;
+import musicsearchportal.adapter.repository.post.model.PostDbModel;
+import musicsearchportal.adapter.repository.reply.converter.ReplyConverter;
+import musicsearchportal.adapter.repository.reply.model.ReplyDbModel;
+import musicsearchportal.domain.model.post.PostId;
 import musicsearchportal.domain.model.reply.Reply;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,95 +27,57 @@ public class ReplyRepositoryTest {
 
   @Mock private ReplyConverter replyConverter;
 
-  @Mock private PostConverter postConverter;
-
   @InjectMocks private ReplyRepositoryImpl replyRepository;
-
-  private final UUID postUuid = UUID.randomUUID();
 
   @Test
   void addReply_Success() {
 
     Reply reply = mock(Reply.class);
+    PostId postId = mock(PostId.class);
+    UUID uuid = UUID.randomUUID();
 
-    when(reply.getPostId()).thenReturn(postUuid);
-    when(reply.getAuthor()).thenReturn(mock(AuthorInfo.class));
-
-    PostDbModel postDbModel = mock(PostDbModel.class);
-    when(mongoTemplate.findOne(any(Query.class), eq(PostDbModel.class))).thenReturn(postDbModel);
-
-    Post post = mock(Post.class);
-    when(postConverter.toEntity(postDbModel)).thenReturn(post);
-
-    AuthorInfo replier = mock(AuthorInfo.class);
-    when(reply.getAuthor()).thenReturn(replier);
-    doNothing().when(post).validateReplyCanBeAdded(replier);
+    when(reply.getPostId()).thenReturn(postId);
+    when(postId.getValue()).thenReturn(uuid);
 
     ReplyDbModel replyDbModel = mock(ReplyDbModel.class);
     when(replyConverter.toDbModel(reply)).thenReturn(replyDbModel);
 
-    when(mongoTemplate.save(replyDbModel)).thenReturn(replyDbModel);
-
     replyRepository.addReply(reply);
 
-    verify(mongoTemplate).findOne(any(Query.class), eq(PostDbModel.class));
-    verify(postConverter).toEntity(postDbModel);
-    verify(post).validateReplyCanBeAdded(replier);
+    verify(reply).getPostId();
+    verify(postId).getValue();
     verify(replyConverter).toDbModel(reply);
-    verify(mongoTemplate).save(replyDbModel);
     verify(mongoTemplate).updateFirst(any(Query.class), any(Update.class), eq(PostDbModel.class));
   }
 
   @Test
-  void addReply_ThrowsException_WhenPostNotFound() {
-
+  void addReply_WhenPostNotFound_StillCallsUpdateFirst() {
     Reply reply = mock(Reply.class);
-    when(reply.getPostId()).thenReturn(postUuid);
-    when(mongoTemplate.findOne(any(Query.class), eq(PostDbModel.class))).thenReturn(null);
+    PostId postId = mock(PostId.class);
+    UUID uuid = UUID.randomUUID();
 
-    IllegalStateException exception =
-        assertThrows(IllegalStateException.class, () -> replyRepository.addReply(reply));
+    when(reply.getPostId()).thenReturn(postId);
+    when(postId.getValue()).thenReturn(uuid);
 
-    assertTrue(exception.getMessage().contains("не найдено"));
+    ReplyDbModel replyDbModel = mock(ReplyDbModel.class);
+    when(replyConverter.toDbModel(reply)).thenReturn(replyDbModel);
 
-    verify(mongoTemplate).findOne(any(Query.class), eq(PostDbModel.class));
-    verify(postConverter, never()).toEntity(any());
-    verify(replyConverter, never()).toDbModel(any());
-    verify(mongoTemplate, never()).save(any());
-    verify(mongoTemplate, never())
-        .updateFirst(any(Query.class), any(Update.class), eq(PostDbModel.class));
+    replyRepository.addReply(reply);
+
+    verify(reply).getPostId();
+    verify(postId).getValue();
+    verify(replyConverter).toDbModel(reply);
+    verify(mongoTemplate).updateFirst(any(Query.class), any(Update.class), eq(PostDbModel.class));
   }
 
   @Test
-  void addReply_ThrowsException_WhenValidationFails() {
-
+  void addReply_WhenPostIdIsNull_ThrowsException() {
     Reply reply = mock(Reply.class);
-    when(reply.getPostId()).thenReturn(postUuid);
+    when(reply.getPostId()).thenReturn(null);
 
-    PostDbModel postDbModel = mock(PostDbModel.class);
-    when(mongoTemplate.findOne(any(Query.class), eq(PostDbModel.class))).thenReturn(postDbModel);
+    assertThrows(NullPointerException.class, () -> replyRepository.addReply(reply));
 
-    Post post = mock(Post.class);
-    when(postConverter.toEntity(postDbModel)).thenReturn(post);
-
-    AuthorInfo replier = mock(AuthorInfo.class);
-    when(reply.getAuthor()).thenReturn(replier);
-
-    doThrow(new PostOperationException("Нельзя откликаться на своё объявление"))
-        .when(post)
-        .validateReplyCanBeAdded(replier);
-
-    PostOperationException exception =
-        assertThrows(PostOperationException.class, () -> replyRepository.addReply(reply));
-
-    assertEquals("Нельзя откликаться на своё объявление", exception.getMessage());
-
-    verify(mongoTemplate).findOne(any(Query.class), eq(PostDbModel.class));
-    verify(postConverter).toEntity(postDbModel);
-    verify(post).validateReplyCanBeAdded(replier);
     verify(replyConverter, never()).toDbModel(any());
-    verify(mongoTemplate, never()).save(any());
-    verify(mongoTemplate, never())
-        .updateFirst(any(Query.class), any(Update.class), eq(PostDbModel.class));
+    verify(mongoTemplate, never()).updateFirst(any(), any(), (Class<?>) any());
   }
 }

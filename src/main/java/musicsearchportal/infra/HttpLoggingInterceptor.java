@@ -1,4 +1,4 @@
-package musicsearchportal.adapter.controller.http.interceptor;
+package musicsearchportal.infra;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -9,15 +9,20 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Component
 @Slf4j
-public class ReplyInterceptor implements HandlerInterceptor {
+public class HttpLoggingInterceptor implements HandlerInterceptor {
+
+  private static final String START_TIME_ATTRIBUTE = "startTime";
 
   @Override
   public boolean preHandle(
       HttpServletRequest request, HttpServletResponse response, Object handler) {
 
-    log.info("Запрос на добавление отклика: {} {}", request.getMethod(), request.getRequestURI());
+    String method = request.getMethod();
+    String uri = request.getRequestURI();
 
-    request.setAttribute("startTime", System.currentTimeMillis());
+    log.info("HTTP запрос: {} {}", method, uri);
+
+    request.setAttribute(START_TIME_ATTRIBUTE, System.currentTimeMillis());
 
     return true;
   }
@@ -29,16 +34,13 @@ public class ReplyInterceptor implements HandlerInterceptor {
       Object handler,
       ModelAndView modelAndView) {
 
-    Long startTime = (Long) request.getAttribute("startTime");
+    Long startTime = (Long) request.getAttribute(START_TIME_ATTRIBUTE);
     if (startTime != null) {
       long duration = System.currentTimeMillis() - startTime;
+      String method = request.getMethod();
+      String uri = request.getRequestURI();
 
-      log.info(
-          "Отклик добавлен {} {} -> {} ({} мс)",
-          request.getMethod(),
-          request.getRequestURI(),
-          response.getStatus(),
-          duration);
+      log.info("HTTP ответ: {} {} -> {} ({} мс)", method, uri, response.getStatus(), duration);
     }
   }
 }

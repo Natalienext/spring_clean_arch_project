@@ -1,4 +1,4 @@
-package musicsearchportal.adapter.controller.http.repository.post.converter;
+package musicsearchportal.adapter.repository.post.converter;
 
 import java.util.HashSet;
 import java.util.Set;

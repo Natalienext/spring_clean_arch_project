@@ -1,4 +1,4 @@
-package musicsearchportal.adapter.controller.http.repository.shared.model;
+package musicsearchportal.adapter.repository.shared.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

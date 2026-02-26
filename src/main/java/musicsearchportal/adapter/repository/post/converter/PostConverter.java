@@ -1,4 +1,4 @@
-package musicsearchportal.adapter.controller.http.repository.post.converter;
+package musicsearchportal.adapter.repository.post.converter;
 
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
-import musicsearchportal.adapter.controller.http.repository.post.model.LocationDbModel;
-import musicsearchportal.adapter.controller.http.repository.post.model.PostDbModel;
-import musicsearchportal.adapter.controller.http.repository.reply.converter.ReplyConverter;
-import musicsearchportal.adapter.controller.http.repository.reply.model.ReplyDbModel;
-import musicsearchportal.adapter.controller.http.repository.shared.converter.AuthorInfoConverter;
+import musicsearchportal.adapter.repository.post.model.LocationDbModel;
+import musicsearchportal.adapter.repository.post.model.PostDbModel;
+import musicsearchportal.adapter.repository.reply.converter.ReplyConverter;
+import musicsearchportal.adapter.repository.reply.model.ReplyDbModel;
+import musicsearchportal.adapter.repository.shared.converter.AuthorInfoConverter;
 import musicsearchportal.domain.model.post.Location;
 import musicsearchportal.domain.model.post.Post;
 import musicsearchportal.domain.model.post.PostId;

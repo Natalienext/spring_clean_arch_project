@@ -1,6 +1,6 @@
 package musicsearchportal.domain.usecase.post;
 
-import java.time.ZoneId;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import musicsearchportal.boundary.model.CreatePostParam;
 import musicsearchportal.boundary.model.CreatePostResult;
@@ -31,7 +31,7 @@ public class CreatePostUseCaseImpl implements CreatePostUseCase {
             Location.create(params.getCity(), params.getDistrict(), params.getRemoteOk()),
             MusicGenre.fromStrings(params.getGenres()),
             PostType.valueOf(params.getPostType()),
-            params.getCreatedAt().atZone(ZoneId.systemDefault()).toLocalDateTime());
+            LocalDateTime.now());
 
     postRepository.save(post);
 

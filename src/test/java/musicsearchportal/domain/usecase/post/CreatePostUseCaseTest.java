@@ -3,7 +3,6 @@ package musicsearchportal.domain.usecase.post;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 import musicsearchportal.boundary.model.CreatePostParam;
@@ -46,7 +45,6 @@ class CreatePostUseCaseTest {
             .remoteOk(true)
             .genres(genres)
             .postType("BAND_SEEKING_MUSICIAN")
-            .createdAt(Instant.now())
             .build();
 
     CreatePostResult result = createPostUseCase.create(params);
@@ -108,7 +106,6 @@ class CreatePostUseCaseTest {
             .remoteOk(true)
             .genres(genres)
             .postType("BAND_SEEKING_MUSICIAN")
-            .createdAt(Instant.now())
             .build();
 
     PostValidationException exception =

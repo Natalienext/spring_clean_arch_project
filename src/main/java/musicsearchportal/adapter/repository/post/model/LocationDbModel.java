@@ -1,4 +1,4 @@
-package musicsearchportal.adapter.controller.http.repository.post.model;
+package musicsearchportal.adapter.repository.post.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

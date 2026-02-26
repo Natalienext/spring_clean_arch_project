@@ -4,9 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-import musicsearchportal.adapter.controller.http.repository.post.PostRepositoryImpl;
-import musicsearchportal.adapter.controller.http.repository.post.converter.PostConverter;
-import musicsearchportal.adapter.controller.http.repository.post.model.PostDbModel;
+import musicsearchportal.adapter.repository.post.converter.PostConverter;
+import musicsearchportal.adapter.repository.post.model.PostDbModel;
 import musicsearchportal.domain.model.post.Post;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

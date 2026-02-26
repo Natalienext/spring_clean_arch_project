@@ -1,6 +1,5 @@
 package musicsearchportal.boundary.model;
 
-import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Builder;
@@ -20,5 +19,4 @@ public class CreatePostParam {
   private Boolean remoteOk;
   private Set<String> genres;
   private String postType;
-  private Instant createdAt;
 }

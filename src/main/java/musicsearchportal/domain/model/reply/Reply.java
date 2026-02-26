@@ -5,14 +5,16 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.Getter;
+import musicsearchportal.domain.exception.DomainException;
 import musicsearchportal.domain.model.AuthorInfo;
+import musicsearchportal.domain.model.post.PostId;
 
 @Getter
 public class Reply {
 
   // Индентификация
   private final UUID replyId;
-  private final UUID postId;
+  private final PostId postId;
 
   private final String message;
   private boolean isActive;
@@ -28,7 +30,7 @@ public class Reply {
   // Приватный конструктор
   private Reply(
       UUID replyId,
-      UUID postId,
+      PostId postId,
       AuthorInfo author,
       String message,
       LocalDateTime createdAt,
@@ -45,7 +47,7 @@ public class Reply {
 
   public static Reply from(
       UUID replyId,
-      UUID postId,
+      PostId postId,
       AuthorInfo author,
       String message,
       LocalDateTime createdAt,
@@ -54,51 +56,18 @@ public class Reply {
   }
 
   public static Reply create(
-      UUID postId, AuthorInfo author, String message, LocalDateTime createdAt) {
+      PostId postId, AuthorInfo author, String message, LocalDateTime createdAt) {
     return new Reply(
         UuidCreator.getTimeOrderedEpoch(), postId, author, message, createdAt, createdAt);
   }
 
   private void validate(String message) {
     if (message == null || message.trim().isEmpty()) {
-      throw new IllegalArgumentException("Сообщение не может быть пустым");
+      throw new DomainException("Сообщение не может быть пустым");
     }
     if (message.trim().length() < 10) {
-      throw new IllegalArgumentException("Сообщение должно содержать минимум 10 символов");
+      throw new DomainException("Сообщение должно содержать минимум 10 символов");
     }
-  }
-
-  public void markAsViewed() {
-    if (viewedAt == null) {
-      viewedAt = LocalDateTime.now();
-      updatedAt = LocalDateTime.now();
-    }
-  }
-
-  public void deactivate() {
-    if (isActive) {
-      isActive = false;
-      updatedAt = LocalDateTime.now();
-    }
-  }
-
-  public void restore() {
-    if (!isActive) {
-      isActive = true;
-      updatedAt = LocalDateTime.now();
-    }
-  }
-
-  public boolean isViewed() {
-    return viewedAt != null;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    Reply reply = (Reply) o;
-    return Objects.equals(replyId, reply.replyId);
   }
 
   @Override

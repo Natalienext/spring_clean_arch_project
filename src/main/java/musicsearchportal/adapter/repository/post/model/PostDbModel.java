@@ -1,12 +1,12 @@
-package musicsearchportal.adapter.controller.http.repository.post.model;
+package musicsearchportal.adapter.repository.post.model;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
-import musicsearchportal.adapter.controller.http.repository.reply.model.ReplyDbModel;
-import musicsearchportal.adapter.controller.http.repository.shared.model.AuthorInfoDbModel;
+import musicsearchportal.adapter.repository.reply.model.ReplyDbModel;
+import musicsearchportal.adapter.repository.shared.model.AuthorInfoDbModel;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 

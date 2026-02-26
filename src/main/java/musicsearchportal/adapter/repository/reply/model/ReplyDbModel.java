@@ -1,15 +1,13 @@
-package musicsearchportal.adapter.controller.http.repository.reply.model;
+package musicsearchportal.adapter.repository.reply.model;
 
 import java.time.Instant;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import musicsearchportal.adapter.controller.http.repository.shared.model.AuthorInfoDbModel;
-import org.springframework.data.mongodb.core.mapping.Document;
+import musicsearchportal.adapter.repository.shared.model.AuthorInfoDbModel;
 
 @Getter
 @Setter
-@Document(collection = "reply")
 @AllArgsConstructor
 public class ReplyDbModel {
 
