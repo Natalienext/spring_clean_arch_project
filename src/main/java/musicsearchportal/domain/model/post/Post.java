@@ -45,7 +45,8 @@ public class Post {
       AuthorInfo author,
       Location location,
       Set<MusicGenre> genres,
-      PostType type) {
+      PostType type,
+      LocalDateTime createdAt) {
     validate(title, description, genres);
     this.id = id;
     this.title = title;
@@ -56,13 +57,65 @@ public class Post {
     this.type = type;
     this.status = PostStatus.DRAFT;
     this.replies = new ArrayList<>();
-    this.createdAt = LocalDateTime.now();
-    this.updatedAt = LocalDateTime.now();
+    this.createdAt = createdAt;
+    this.updatedAt = createdAt;
     this.expiresAt = calculateExpirationDate();
   }
 
-  public static Post createDraft(String title, AuthorInfo author, PostType type) {
-    return new Post(PostId.newId(), title, "", author, null, new HashSet<>(), type);
+  private Post(
+      PostId id,
+      String title,
+      String description,
+      AuthorInfo author,
+      Location location,
+      Set<MusicGenre> genres,
+      List<Reply> replies,
+      PostType type,
+      PostStatus status,
+      LocalDateTime createdAt,
+      LocalDateTime updatedAt,
+      LocalDateTime expiresAt) {
+    validate(title, description, genres);
+    this.id = id;
+    this.title = title;
+    this.description = description;
+    this.author = author;
+    this.location = location;
+    this.genres = new HashSet<>(genres);
+    this.type = type;
+    this.status = status;
+    this.replies = replies;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
+    this.expiresAt = expiresAt;
+  }
+
+  public static Post from(
+      PostId id,
+      String title,
+      String description,
+      AuthorInfo author,
+      Location location,
+      Set<MusicGenre> genres,
+      List<Reply> replies,
+      PostType type,
+      PostStatus status,
+      LocalDateTime createdAt,
+      LocalDateTime updatedAt,
+      LocalDateTime expiresAt) {
+    return new Post(
+        id,
+        title,
+        description,
+        author,
+        location,
+        genres,
+        replies,
+        type,
+        status,
+        createdAt,
+        updatedAt,
+        expiresAt);
   }
 
   public static Post createFull(
@@ -71,8 +124,9 @@ public class Post {
       AuthorInfo author,
       Location location,
       Set<MusicGenre> genres,
-      PostType type) {
-    return new Post(PostId.newId(), title, description, author, location, genres, type);
+      PostType type,
+      LocalDateTime createdAt) {
+    return new Post(PostId.newId(), title, description, author, location, genres, type, createdAt);
   }
 
   public void publish() {
@@ -108,18 +162,13 @@ public class Post {
     updatedAt = LocalDateTime.now();
   }
 
-  public Reply addReply(AuthorInfo replier, String message, Set<MusicGenre> replierGenres) {
+  public void validateReplyCanBeAdded(AuthorInfo replier) {
     if (!isActive()) {
       throw new PostOperationException("Нельзя откликаться на неактивные объявления");
     }
     if (replier.getUserId().equals(author.getUserId())) {
       throw new PostOperationException("Нельзя откликаться на своё объявление");
     }
-
-    Reply reply = Reply.create(id.getValue(), replier, message, replierGenres);
-    replies.add(reply);
-    updatedAt = LocalDateTime.now();
-    return reply;
   }
 
   public void updateContent(

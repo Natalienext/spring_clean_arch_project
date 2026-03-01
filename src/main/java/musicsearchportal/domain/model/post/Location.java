@@ -8,7 +8,7 @@ public final class Location {
 
   private final String city;
   private final String district;
-  private final boolean remoteOk;
+  private final Boolean remoteOk;
 
   public static Location create(String city, String district, boolean remoteOk) {
     validate(city);

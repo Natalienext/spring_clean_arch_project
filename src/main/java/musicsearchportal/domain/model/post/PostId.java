@@ -1,9 +1,8 @@
 package musicsearchportal.domain.model.post;
 
+import com.github.f4b6a3.uuid.UuidCreator;
 import java.util.Objects;
 import java.util.UUID;
-
-import com.github.f4b6a3.uuid.UuidCreator;
 import lombok.Getter;
 
 @Getter

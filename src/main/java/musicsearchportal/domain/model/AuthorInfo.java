@@ -18,8 +18,7 @@ public final class AuthorInfo {
     this.yearsExperience = yearsExperience;
   }
 
-  public static AuthorInfo from(
-      UUID userId, String displayName, String userType, int yearsExperience) {
+  public static AuthorInfo from(UUID userId, String displayName, int yearsExperience) {
     return new AuthorInfo(userId, displayName, yearsExperience);
   }
 
@@ -33,10 +32,6 @@ public final class AuthorInfo {
     if (yearsExperience < 0) {
       throw new IllegalArgumentException("Опыт не может быть отрицательным");
     }
-  }
-
-  public String getShortInfo() {
-    return String.format("%s (опыт: %d лет)", displayName, yearsExperience);
   }
 
   @Override

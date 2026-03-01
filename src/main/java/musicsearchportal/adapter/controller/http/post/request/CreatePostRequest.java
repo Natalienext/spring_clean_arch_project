@@ -1,5 +1,16 @@
 package musicsearchportal.adapter.controller.http.post.request;
 
-import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
-public record CreatePostRequest(String author, String description, List<String> hashtags) {}
+public record CreatePostRequest(
+    String title,
+    String description,
+    UUID authorId,
+    String authorName,
+    int authorYearsExperience,
+    String city,
+    String district,
+    boolean remoteOk,
+    Set<String> genres,
+    String postType) {}

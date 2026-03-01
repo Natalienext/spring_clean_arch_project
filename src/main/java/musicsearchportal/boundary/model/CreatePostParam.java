@@ -1,7 +1,7 @@
 package musicsearchportal.boundary.model;
 
-import java.time.Instant;
-import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -9,8 +9,14 @@ import lombok.Getter;
 @Getter
 public class CreatePostParam {
 
+  private String title;
   private String description;
-  private String author;
-  private List<String> hashtags;
-  private Instant createdAt;
+  private UUID authorId;
+  private String authorName;
+  private int authorYearsExperience;
+  private String city;
+  private String district;
+  private Boolean remoteOk;
+  private Set<String> genres;
+  private String postType;
 }
