@@ -22,7 +22,7 @@ public class Post {
   private String description;
 
   // Value Objects
-  private final AuthorInfo author;
+  private AuthorInfo author;
   private Location location;
   private Set<MusicGenre> genres;
 
@@ -42,7 +42,6 @@ public class Post {
       PostId id,
       String title,
       String description,
-      AuthorInfo author,
       Location location,
       Set<MusicGenre> genres,
       PostType type,
@@ -51,7 +50,7 @@ public class Post {
     this.id = id;
     this.title = title;
     this.description = description;
-    this.author = author;
+    this.author = null;
     this.location = location;
     this.genres = new HashSet<>(genres);
     this.type = type;
@@ -121,45 +120,11 @@ public class Post {
   public static Post createFull(
       String title,
       String description,
-      AuthorInfo author,
       Location location,
       Set<MusicGenre> genres,
       PostType type,
       LocalDateTime createdAt) {
-    return new Post(PostId.newId(), title, description, author, location, genres, type, createdAt);
-  }
-
-  public void publish() {
-    if (status != PostStatus.DRAFT) {
-      throw new PostOperationException("Можно публиковать только черновики");
-    }
-    if (description == null || description.trim().isEmpty()) {
-      throw new PostOperationException("Описание обязательно для публикации");
-    }
-    if (genres.isEmpty()) {
-      throw new PostOperationException("Укажите хотя бы один жанр");
-    }
-
-    status = PostStatus.PUBLISHED;
-    updatedAt = LocalDateTime.now();
-  }
-
-  public void close() {
-    if (status != PostStatus.PUBLISHED) {
-      throw new PostOperationException("Можно закрыть только опубликованные объявления");
-    }
-    status = PostStatus.WITHDRAWN;
-    updatedAt = LocalDateTime.now();
-  }
-
-  public void archive() {
-    status = PostStatus.ARCHIVED;
-    updatedAt = LocalDateTime.now();
-  }
-
-  public void ban() {
-    status = PostStatus.BANNED;
-    updatedAt = LocalDateTime.now();
+    return new Post(PostId.newId(), title, description, location, genres, type, createdAt);
   }
 
   public void validateReplyCanBeAdded(AuthorInfo replier) {
@@ -169,20 +134,6 @@ public class Post {
     if (replier.getUserId().equals(author.getUserId())) {
       throw new PostOperationException("Нельзя откликаться на своё объявление");
     }
-  }
-
-  public void updateContent(
-      String title, String description, Location location, Set<MusicGenre> genres) {
-    if (!canBeEdited()) {
-      throw new PostOperationException("Объявление нельзя редактировать в текущем статусе");
-    }
-
-    validate(title, description, genres);
-    this.title = title;
-    this.description = description;
-    this.location = location;
-    this.genres = new HashSet<>(genres);
-    this.updatedAt = LocalDateTime.now();
   }
 
   public boolean isActive() {
@@ -199,8 +150,28 @@ public class Post {
         || status == PostStatus.ARCHIVED;
   }
 
-  public boolean canBeEdited() {
-    return status == PostStatus.DRAFT || status == PostStatus.PUBLISHED;
+  public void assignAuthor(AuthorInfo authorInfo) {
+
+    if (this.author != null) {
+      throw new IllegalStateException("Автор уже назначен");
+    }
+
+    if (this.status != PostStatus.DRAFT) {
+      throw new IllegalStateException("Нельзя назначить автора на пост в статусе " + this.status);
+    }
+
+    this.author = authorInfo;
+    this.status = PostStatus.PUBLISHED;
+    this.updatedAt = LocalDateTime.now();
+  }
+
+  public void withdraw() {
+
+    if (this.status == PostStatus.WITHDRAWN) {
+      throw new IllegalStateException("Пост уже отозван");
+    }
+    this.status = PostStatus.WITHDRAWN;
+    this.updatedAt = LocalDateTime.now();
   }
 
   private LocalDateTime calculateExpirationDate() {

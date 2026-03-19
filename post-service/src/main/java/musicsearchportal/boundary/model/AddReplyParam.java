@@ -10,6 +10,4 @@ public class AddReplyParam {
   private UUID postId;
   private String message;
   private UUID authorId;
-  private String authorName;
-  private int authorYearsExperience;
 }

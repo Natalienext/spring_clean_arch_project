@@ -2,6 +2,8 @@ package musicsearchportal.domain.usecase.post;
 
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import musicsearchportal.adapter.gateway.grpc.UserServiceClient;
 import musicsearchportal.boundary.model.CreatePostParam;
 import musicsearchportal.boundary.model.CreatePostResult;
 import musicsearchportal.boundary.repository.PostRepository;
@@ -15,9 +17,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CreatePostUseCaseImpl implements CreatePostUseCase {
 
   private final PostRepository postRepository;
+  private final UserServiceClient userServiceClient;
 
   @Override
   public CreatePostResult create(CreatePostParam params) {
@@ -26,15 +30,30 @@ public class CreatePostUseCaseImpl implements CreatePostUseCase {
         Post.createFull(
             params.getTitle(),
             params.getDescription(),
-            AuthorInfo.from(
-                params.getAuthorId(), params.getAuthorName(), params.getAuthorYearsExperience()),
             Location.create(params.getCity(), params.getDistrict(), params.getRemoteOk()),
             MusicGenre.fromStrings(params.getGenres()),
             PostType.valueOf(params.getPostType()),
             LocalDateTime.now());
 
-    postRepository.save(post);
+    log.info("Создан пост с id: {} в статусе DRAFT", post.getId());
 
+    var userDataOptional = userServiceClient.findUserById(params.getAuthorId());
+
+    if (userDataOptional.isPresent()) {
+
+      var userData = userDataOptional.get();
+      AuthorInfo authorInfo =
+          AuthorInfo.from(
+              userData.getUserId(), userData.getDisplayName(), userData.getYearsExperience());
+
+      post.assignAuthor(authorInfo);
+
+    } else {
+      log.warn("Автор с id {} не найден, пост будет отозван", params.getAuthorId());
+      post.withdraw();
+    }
+
+    postRepository.save(post);
     return new CreatePostResult(post.getId().toString());
   }
 }

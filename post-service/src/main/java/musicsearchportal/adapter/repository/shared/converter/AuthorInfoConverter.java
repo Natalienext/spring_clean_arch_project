@@ -1,6 +1,5 @@
 package musicsearchportal.adapter.repository.shared.converter;
 
-import java.util.UUID;
 import musicsearchportal.adapter.repository.shared.model.AuthorInfoDbModel;
 import musicsearchportal.domain.model.AuthorInfo;
 import org.springframework.stereotype.Component;
@@ -19,8 +18,6 @@ public final class AuthorInfoConverter {
 
     if (dbModel == null) return null;
     return AuthorInfo.from(
-        UUID.fromString(dbModel.getUserId()),
-        dbModel.getDisplayName(),
-        dbModel.getYearsExperience());
+        dbModel.getUserId(), dbModel.getDisplayName(), dbModel.getYearsExperience());
   }
 }

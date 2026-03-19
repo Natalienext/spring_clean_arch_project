@@ -7,8 +7,6 @@ public record CreatePostRequest(
     String title,
     String description,
     UUID authorId,
-    String authorName,
-    int authorYearsExperience,
     String city,
     String district,
     boolean remoteOk,

@@ -18,8 +18,13 @@ public final class AuthorInfo {
     this.yearsExperience = yearsExperience;
   }
 
-  public static AuthorInfo from(UUID userId, String displayName, int yearsExperience) {
-    return new AuthorInfo(userId, displayName, yearsExperience);
+  public static AuthorInfo from(String userId, String displayName, int yearsExperience) {
+    try {
+      UUID uuid = UUID.fromString(userId);
+      return new AuthorInfo(uuid, displayName, yearsExperience);
+    } catch (IllegalArgumentException e) {
+      throw new IllegalArgumentException("Некорректный формат UUID: " + userId, e);
+    }
   }
 
   private void validate(UUID userId, String displayName, int yearsExperience) {

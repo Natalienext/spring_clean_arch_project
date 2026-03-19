@@ -12,8 +12,6 @@ public class CreatePostParam {
   private String title;
   private String description;
   private UUID authorId;
-  private String authorName;
-  private int authorYearsExperience;
   private String city;
   private String district;
   private Boolean remoteOk;

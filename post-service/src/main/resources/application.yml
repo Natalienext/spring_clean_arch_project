@@ -9,8 +9,8 @@ spring:
 
 user:
   service:
-    host: localhost
-    port: 9090
+    host: ${USER_SERVICE_HOST:localhost}
+    port: ${USER_SERVICE_PORT:9090}
 
 grpc:
   client:

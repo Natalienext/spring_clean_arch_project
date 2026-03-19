@@ -20,8 +20,6 @@ public final class ReplyConvertor {
         .postId(request.postId())
         .message(request.message())
         .authorId(request.authorId())
-        .authorName(request.authorName())
-        .authorYearsExperience(request.authorYearsExperience())
         .build();
   }
 

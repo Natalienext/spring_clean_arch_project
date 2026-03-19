@@ -20,8 +20,6 @@ public final class PostConvertor {
         .title(request.title())
         .description(request.description())
         .authorId(request.authorId())
-        .authorName(request.authorName())
-        .authorYearsExperience(request.authorYearsExperience())
         .city(request.city())
         .district(request.district())
         .remoteOk(request.remoteOk())
