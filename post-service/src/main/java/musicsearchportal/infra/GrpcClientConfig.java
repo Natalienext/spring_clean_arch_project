@@ -16,7 +16,7 @@ public class GrpcClientConfig {
   @Value("${user.service.port:9090}")
   private int userServicePort;
 
-  @Bean
+  @Bean(destroyMethod = "shutdown")
   public ManagedChannel userServiceChannel() {
     return ManagedChannelBuilder.forAddress(userServiceHost, userServicePort)
         .usePlaintext()

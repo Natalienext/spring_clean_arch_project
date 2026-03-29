@@ -1,11 +1,13 @@
 package musicsearchportal.domain.usecase.post;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import musicsearchportal.adapter.gateway.grpc.UserServiceClient;
+import musicsearchportal.boundary.gateway.UserService;
 import musicsearchportal.boundary.model.CreatePostParam;
 import musicsearchportal.boundary.model.CreatePostResult;
+import musicsearchportal.boundary.model.FindUserResult;
 import musicsearchportal.boundary.repository.PostRepository;
 import musicsearchportal.boundary.usecase.CreatePostUseCase;
 import musicsearchportal.domain.model.AuthorInfo;
@@ -21,7 +23,7 @@ import org.springframework.stereotype.Service;
 public class CreatePostUseCaseImpl implements CreatePostUseCase {
 
   private final PostRepository postRepository;
-  private final UserServiceClient userServiceClient;
+  private final UserService userService;
 
   @Override
   public CreatePostResult create(CreatePostParam params) {
@@ -37,7 +39,7 @@ public class CreatePostUseCaseImpl implements CreatePostUseCase {
 
     log.info("Создан пост с id: {} в статусе DRAFT", post.getId());
 
-    var userDataOptional = userServiceClient.findUserById(params.getAuthorId());
+    Optional<FindUserResult> userDataOptional = userService.findUserById(params.getAuthorId());
 
     if (userDataOptional.isPresent()) {
 

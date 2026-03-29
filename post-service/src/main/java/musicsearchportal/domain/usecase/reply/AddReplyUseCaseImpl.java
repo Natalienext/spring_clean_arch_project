@@ -3,7 +3,7 @@ package musicsearchportal.domain.usecase.reply;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import musicsearchportal.adapter.gateway.grpc.UserServiceClient;
+import musicsearchportal.boundary.gateway.UserService;
 import musicsearchportal.boundary.model.AddReplyParam;
 import musicsearchportal.boundary.model.AddReplyResult;
 import musicsearchportal.boundary.repository.PostRepository;
@@ -24,7 +24,7 @@ public class AddReplyUseCaseImpl implements AddReplyUseCase {
 
   private final PostRepository postRepository;
   private final ReplyRepository replyRepository;
-  private final UserServiceClient userServiceClient;
+  private final UserService userService;
 
   @Override
   public AddReplyResult add(AddReplyParam param) {
@@ -35,7 +35,7 @@ public class AddReplyUseCaseImpl implements AddReplyUseCase {
     log.info("Найден пост с id: {} для добавления отклика", postId);
 
     log.info("Проверка автора отклика с id: {} в user-service", param.getAuthorId());
-    var userDataOptional = userServiceClient.findUserById(param.getAuthorId());
+    var userDataOptional = userService.findUserById(param.getAuthorId());
 
     if (userDataOptional.isEmpty()) {
       log.warn(

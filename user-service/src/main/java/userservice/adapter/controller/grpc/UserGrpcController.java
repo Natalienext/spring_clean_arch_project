@@ -1,11 +1,12 @@
 package userservice.adapter.controller.grpc;
 
 import io.grpc.stub.StreamObserver;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import userservice.adapter.controller.grpc.convertor.UserConvertor;
 import userservice.boundary.usecase.UserUseCase;
+import userservice.domain.exception.UserNotFoundException;
 import userservice.domain.model.User;
 import userservice.proto.GetUserRequest;
 import userservice.proto.GetUserResponse;
@@ -21,31 +22,23 @@ public class UserGrpcController extends UserServiceGrpc.UserServiceImplBase {
   @Override
   public void getUser(GetUserRequest request, StreamObserver<GetUserResponse> responseObserver) {
 
-    String userId = request.getUserId();
-
     try {
 
-      UUID uuid = UUID.fromString(userId);
-      User user = userUseCase.getUser(uuid);
+      User user = userUseCase.getUser(UserConvertor.createRequestToModel(request));
+      GetUserResponse response = UserConvertor.createResultToResponse(user);
+      responseObserver.onNext(response);
+      responseObserver.onCompleted();
 
+    } catch (UserNotFoundException e) {
       GetUserResponse response =
-          GetUserResponse.newBuilder()
-              .setUserId(user.getUserID().toString())
-              .setDisplayName(user.getDisplayName())
-              .setYearsExperience(user.getYearsExperience())
-              .build();
-
+          UserConvertor.createErrorResponse(
+              "USER_NOT_FOUND", "User with id " + request.getUserId() + " not found");
       responseObserver.onNext(response);
       responseObserver.onCompleted();
 
     } catch (Exception e) {
-
-      log.error("Ошибка при обработке gRPC запроса для id: {}", userId, e);
-      responseObserver.onError(
-          io.grpc.Status.NOT_FOUND
-              .withDescription("Пользователь не найден: " + userId)
-              .withCause(e)
-              .asRuntimeException());
+      log.error("System error", e);
+      responseObserver.onError(UserGrpcControllerError.internalError(e));
     }
   }
 }
