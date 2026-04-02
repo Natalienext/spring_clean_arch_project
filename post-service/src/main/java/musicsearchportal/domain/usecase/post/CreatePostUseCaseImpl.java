@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import musicsearchportal.boundary.gateway.UserService;
+import musicsearchportal.boundary.gateway.UserServiceGrpcGateway;
 import musicsearchportal.boundary.model.CreatePostParam;
 import musicsearchportal.boundary.model.CreatePostResult;
 import musicsearchportal.boundary.model.FindUserResult;
@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 public class CreatePostUseCaseImpl implements CreatePostUseCase {
 
   private final PostRepository postRepository;
-  private final UserService userService;
+  private final UserServiceGrpcGateway userServiceGrpcGateway;
 
   @Override
   public CreatePostResult create(CreatePostParam params) {
@@ -39,7 +39,8 @@ public class CreatePostUseCaseImpl implements CreatePostUseCase {
 
     log.info("Создан пост с id: {} в статусе DRAFT", post.getId());
 
-    Optional<FindUserResult> userDataOptional = userService.findUserById(params.getAuthorId());
+    Optional<FindUserResult> userDataOptional =
+        userServiceGrpcGateway.findUserById(params.getAuthorId());
 
     if (userDataOptional.isPresent()) {
 

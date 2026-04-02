@@ -6,7 +6,7 @@ import static org.mockito.Mockito.*;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import musicsearchportal.boundary.gateway.UserService;
+import musicsearchportal.boundary.gateway.UserServiceGrpcGateway;
 import musicsearchportal.boundary.model.CreatePostParam;
 import musicsearchportal.boundary.model.CreatePostResult;
 import musicsearchportal.boundary.model.FindUserResult;
@@ -27,7 +27,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class CreatePostUseCaseTest {
 
   @Mock private PostRepository postRepository;
-  @Mock private UserService userService;
+  @Mock private UserServiceGrpcGateway userServiceGrpcGateway;
 
   @InjectMocks private CreatePostUseCaseImpl createPostUseCase;
 
@@ -61,7 +61,7 @@ class CreatePostUseCaseTest {
             .postType("BAND_SEEKING_MUSICIAN")
             .build();
 
-    when(userService.findUserById(authorId)).thenReturn(Optional.of(userResponse));
+    when(userServiceGrpcGateway.findUserById(authorId)).thenReturn(Optional.of(userResponse));
 
     CreatePostResult result = createPostUseCase.create(params);
 
@@ -93,7 +93,7 @@ class CreatePostUseCaseTest {
             .postType("BAND_SEEKING_MUSICIAN")
             .build();
 
-    when(userService.findUserById(authorId)).thenReturn(Optional.empty());
+    when(userServiceGrpcGateway.findUserById(authorId)).thenReturn(Optional.empty());
 
     CreatePostResult result = createPostUseCase.create(params);
 
@@ -127,6 +127,6 @@ class CreatePostUseCaseTest {
 
     assertEquals("Заголовок должен содержать минимум 5 символов", exception.getMessage());
     verify(postRepository, never()).save(any(Post.class));
-    verify(userService, never()).findUserById(any());
+    verify(userServiceGrpcGateway, never()).findUserById(any());
   }
 }

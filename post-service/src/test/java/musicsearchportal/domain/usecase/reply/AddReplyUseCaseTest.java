@@ -5,7 +5,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.Optional;
 import java.util.UUID;
-import musicsearchportal.boundary.gateway.UserService;
+import musicsearchportal.boundary.gateway.UserServiceGrpcGateway;
 import musicsearchportal.boundary.model.AddReplyParam;
 import musicsearchportal.boundary.model.AddReplyResult;
 import musicsearchportal.boundary.model.FindUserResult;
@@ -30,7 +30,7 @@ public class AddReplyUseCaseTest {
 
   @Mock private ReplyRepository replyRepository;
   @Mock private PostRepository postRepository;
-  @Mock private UserService userService;
+  @Mock private UserServiceGrpcGateway userServiceGrpcGateway;
 
   @InjectMocks private AddReplyUseCaseImpl addReplyUseCase;
 
@@ -59,7 +59,7 @@ public class AddReplyUseCaseTest {
 
     Post post = mock(Post.class);
     when(postRepository.findById(any(PostId.class))).thenReturn(Optional.of(post));
-    when(userService.findUserById(authorId)).thenReturn(Optional.of(userResponse));
+    when(userServiceGrpcGateway.findUserById(authorId)).thenReturn(Optional.of(userResponse));
 
     AddReplyResult result = addReplyUseCase.add(param);
 
@@ -67,7 +67,7 @@ public class AddReplyUseCaseTest {
     assertNotNull(result.id());
 
     verify(postRepository).findById(any(PostId.class));
-    verify(userService).findUserById(authorId);
+    verify(userServiceGrpcGateway).findUserById(authorId);
     verify(post).validateReplyCanBeAdded(any(AuthorInfo.class));
     verify(replyRepository).addReply(any(Reply.class));
   }
@@ -86,14 +86,14 @@ public class AddReplyUseCaseTest {
             .build();
 
     when(postRepository.findById(validPostId)).thenReturn(Optional.of(post));
-    when(userService.findUserById(authorId)).thenReturn(Optional.empty());
+    when(userServiceGrpcGateway.findUserById(authorId)).thenReturn(Optional.empty());
 
     AuthorNotFoundException exception =
         assertThrows(AuthorNotFoundException.class, () -> addReplyUseCase.add(param));
 
     assertEquals(authorId, exception.getAuthorId());
     verify(postRepository).findById(validPostId);
-    verify(userService).findUserById(authorId);
+    verify(userServiceGrpcGateway).findUserById(authorId);
     verify(replyRepository, never()).addReply(any(Reply.class));
   }
 
@@ -108,7 +108,7 @@ public class AddReplyUseCaseTest {
 
     Post post = mock(Post.class);
     when(postRepository.findById(any(PostId.class))).thenReturn(Optional.of(post));
-    when(userService.findUserById(authorId)).thenReturn(Optional.of(userResponse));
+    when(userServiceGrpcGateway.findUserById(authorId)).thenReturn(Optional.of(userResponse));
     doThrow(new PostOperationException("Нельзя откликаться на своё объявление"))
         .when(post)
         .validateReplyCanBeAdded(any(AuthorInfo.class));
@@ -118,7 +118,7 @@ public class AddReplyUseCaseTest {
 
     assertEquals("Нельзя откликаться на своё объявление", exception.getMessage());
     verify(postRepository).findById(any(PostId.class));
-    verify(userService).findUserById(authorId);
+    verify(userServiceGrpcGateway).findUserById(authorId);
     verify(post).validateReplyCanBeAdded(any(AuthorInfo.class));
     verify(replyRepository, never()).addReply(any(Reply.class));
   }
@@ -132,14 +132,14 @@ public class AddReplyUseCaseTest {
         AddReplyParam.builder().postId(postId).authorId(authorId).message("Коротко").build();
 
     when(postRepository.findById(validPostId)).thenReturn(Optional.of(post));
-    when(userService.findUserById(authorId)).thenReturn(Optional.of(userResponse));
+    when(userServiceGrpcGateway.findUserById(authorId)).thenReturn(Optional.of(userResponse));
 
     DomainException exception =
         assertThrows(DomainException.class, () -> addReplyUseCase.add(param));
 
     assertEquals("Сообщение должно содержать минимум 10 символов", exception.getMessage());
     verify(postRepository).findById(validPostId);
-    verify(userService).findUserById(authorId);
+    verify(userServiceGrpcGateway).findUserById(authorId);
     verify(replyRepository, never()).addReply(any(Reply.class));
   }
 }

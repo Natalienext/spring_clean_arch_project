@@ -10,10 +10,6 @@ public class UserServiceConverter {
 
   public FindUserResult toDomain(GetUserResponse response) {
 
-    if (!response.hasData()) {
-      return null;
-    }
-
     UserData data = response.getData();
 
     return FindUserResult.builder()

@@ -4,7 +4,7 @@ import java.util.Optional;
 import java.util.UUID;
 import musicsearchportal.boundary.model.FindUserResult;
 
-public interface UserService {
+public interface UserServiceGrpcGateway {
 
   Optional<FindUserResult> findUserById(UUID userId);
 }
