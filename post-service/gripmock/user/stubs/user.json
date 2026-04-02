@@ -1,0 +1,19 @@
+{
+  "service": "UserService",
+  "method": "GetUser",
+  "input": {
+    "equals": {
+      "user_id": "12345678-1234-1234-1234-123456789012"
+    }
+  },
+  "output": {
+      "data": {
+        "data": {
+          "user_id": "12345678-1234-1234-1234-123456789012",
+          "display_name": "Test User",
+          "years_experience": 5
+        }
+      },
+    "status": 0
+  }
+}

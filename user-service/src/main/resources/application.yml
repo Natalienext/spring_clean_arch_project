@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: music portal
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: MusicPortalDB
+grpc:
+  server:
+    port: 9090

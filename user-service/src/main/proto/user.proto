@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package user;
+
+option java_multiple_files = true;
+option java_package = "userservice.proto";
+option java_outer_classname = "UserServiceProto";
+
+service UserService {
+    rpc GetUser (GetUserRequest) returns (GetUserResponse);
+}
+
+message GetUserRequest {
+    string user_id = 1;
+}
+
+message UserData {
+    string user_id = 1;
+    string display_name = 2;
+    int32 years_experience = 3;
+}
+
+message UserError {
+    string error_code = 1;
+    string message = 2;
+}
+
+message GetUserResponse {
+    oneof result {
+        UserData data = 1;
+        UserError error = 2;
+    }
+}
