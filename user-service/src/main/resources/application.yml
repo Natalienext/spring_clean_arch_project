@@ -6,6 +6,12 @@ spring:
       host: localhost
       port: 27017
       database: MusicPortalDB
+  kafka:
+    bootstrap-servers: kafka:9092
+    topic: user-updated
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
 grpc:
   server:
     port: 9090

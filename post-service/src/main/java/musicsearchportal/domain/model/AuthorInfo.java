@@ -27,6 +27,10 @@ public final class AuthorInfo {
     }
   }
 
+  public static AuthorInfo create(UUID userId, String displayName, int yearsExperience) {
+    return new AuthorInfo(userId, displayName, yearsExperience);
+  }
+
   private void validate(UUID userId, String displayName, int yearsExperience) {
     if (userId == null) {
       throw new IllegalArgumentException("ID пользователя обязательно");
