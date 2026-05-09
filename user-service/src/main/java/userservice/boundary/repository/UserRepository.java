@@ -6,4 +6,6 @@ import userservice.domain.model.User;
 public interface UserRepository {
 
   Optional<User> getUserById(String id);
+
+  void changeUser(User user);
 }

@@ -27,4 +27,11 @@ public class UserRepositoryImpl implements UserRepository {
     User user = UserConverter.toEntity(userDbModel);
     return Optional.of(user);
   }
+
+  @Override
+  public void changeUser(User user) {
+
+    UserDbModel userDbModel = UserConverter.toDbModel(user);
+    mongoTemplate.save(userDbModel);
+  }
 }
