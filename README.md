@@ -1,93 +1,69 @@
-# java-s2-nloshchinina
+# Music Search Portal
 
+Учебный pet-проект: платформа объявлений для музыкантов на Spring Boot, построенная как микросервисная система с чистой архитектурой (Clean Architecture), gRPC-взаимодействием между сервисами и событийной синхронизацией данных через Kafka.
 
+## О проекте (RU)
 
-## Getting started
+**Music Search Portal** — сервис объявлений, где музыканты находят друг друга: публикуют посты по жанру, локации и типу (например, поиск участников группы или предложение выступления), а другие пользователи откликаются на них.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+Проект состоит из двух независимых сервисов:
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+- **[user-service](user-service)** — управление профилями пользователей (REST API), отдаёт данные о пользователе другим сервисам по **gRPC**, публикует события об изменениях в **Kafka**.
+- **[post-service](post-service)** — управление объявлениями и откликами (REST API), запрашивает данные автора у user-service по gRPC и подписан на Kafka-события для обновления кэшированной информации об авторе.
 
-## Add your files
+Оба сервиса хранят данные в **MongoDB** и спроектированы по слоям чистой архитектуры: `domain` → `boundary` → `adapter` → `infra`.
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+### Технический стек
 
+| Категория | Технологии |
+|---|---|
+| Язык / платформа | Java 17, Maven |
+| Фреймворк | Spring Boot 3.5.7 (Web, Data MongoDB, Kafka) |
+| Межсервисное взаимодействие | gRPC 1.70.0 + Protocol Buffers (генерация кода из `.proto` через `protobuf-maven-plugin`) |
+| Событийная шина | Apache Kafka + Zookeeper (публикация/подписка на изменения пользователя) |
+| База данных | MongoDB (Spring Data MongoDB) |
+| Документация API | springdoc-openapi / Swagger UI (post-service) |
+| Прочее | Lombok, UUID Creator (f4b6a3), Spotless + google-java-format (автоформатирование кода) |
+| Тестирование | JUnit / Spring Boot Test, GripMock — мок gRPC-сервера user-service для изолированного тестирования post-service |
+| Инфраструктура | Docker Compose (оркестрация всех сервисов), health checks |
+
+### Запуск
+```bash
+docker-compose up
 ```
-cd existing_repo
-git remote add origin https://gitlab.31338.ru/study/java/stream-2/java-s2-nloshchinina.git
-git branch -M main
-git push -uf origin main
+- user-service: REST `:8080`, gRPC `:9090`
+- post-service: REST `:8081`
+
+---
+
+## About the project (EN)
+
+**Music Search Portal** is a classifieds-style platform for musicians: users publish posts by genre, location and type (e.g. looking for band members or offering a gig), and others reply to them.
+
+The project consists of two independent services:
+
+- **[user-service](user-service)** — manages user profiles (REST API), exposes user data to other services over **gRPC**, and publishes change events to **Kafka**.
+- **[post-service](post-service)** — manages posts and replies (REST API), fetches author data from user-service over gRPC, and consumes Kafka events to keep the cached author info up to date.
+
+Both services persist data in **MongoDB** and follow Clean Architecture layering: `domain` → `boundary` → `adapter` → `infra`.
+
+### Tech stack
+
+| Category | Technologies |
+|---|---|
+| Language / build | Java 17, Maven |
+| Framework | Spring Boot 3.5.7 (Web, Data MongoDB, Kafka) |
+| Inter-service communication | gRPC 1.70.0 + Protocol Buffers (code generated from `.proto` via `protobuf-maven-plugin`) |
+| Event bus | Apache Kafka + Zookeeper (publish/subscribe on user changes) |
+| Database | MongoDB (Spring Data MongoDB) |
+| API docs | springdoc-openapi / Swagger UI (post-service) |
+| Other | Lombok, UUID Creator (f4b6a3), Spotless + google-java-format (code auto-formatting) |
+| Testing | JUnit / Spring Boot Test, GripMock — mock gRPC server for user-service used to test post-service in isolation |
+| Infrastructure | Docker Compose (orchestrates all services), health checks |
+
+### Running locally
+```bash
+docker-compose up
 ```
-
-## Integrate with your tools
-
-- [ ] [Set up project integrations](https://gitlab.31338.ru/study/java/stream-2/java-s2-nloshchinina/-/settings/integrations)
-
-## Collaborate with your team
-
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+- user-service: REST `:8080`, gRPC `:9090`
+- post-service: REST `:8081`
